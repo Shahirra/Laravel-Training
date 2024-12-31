@@ -1,0 +1,100 @@
+Lab2:
+
+// continue lab 1 
+// create 2 migration 
+1- create books -> title , price , des 
+
+   php artisan make:migration create_books_table --create=books
+
+  Schema::create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->decimal('price', 8, 2);
+            $table->text('description');
+            $table->timestamps();
+        });
+php artisan migrate
+--------------------------------------------------------------------------------
+2- create catagories -> name 
+php artisan make:migration create_categories_table --create=categories
+
+ Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+php artisan migrate
+--------------------------------------------------------------------------------
+
+3-sorry i forgot to add pic  -> new migration for books table -> add column pic 
+
+php artisan make:migration add_pic_column_to_books_table --table=books
+
+class AddPicColumnToBooksTable extends Migration
+{
+    public function up()
+    {
+        Schema::table('books', function (Blueprint $table) {
+            $table->string('pic')->nullable();
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('books', function (Blueprint $table) {
+            $table->dropColumn('pic');
+        });
+    }
+}
+
+php artisan migrate
+
+---------------------------------------------------------------------------------
+
+
+4-add seeder for this 2 tables with fakersssssssss (100 -> books , 10 for catagories)
+
+php artisan make:seeder BooksSeeder
+php artisan make:seeder CategoriesSeeder
+
+use Illuminate\Database\Seeder;
+use App\Models\Book;
+use Faker\Factory as Faker;
+
+class BooksSeeder extends Seeder
+{
+    public function run()
+    {
+        $faker = Faker::create();
+
+        for ($i = 0; $i < 100; $i++) {
+            Book::create([
+                'title' => $faker->sentence,
+                'price' => $faker->randomFloat(2, 10, 100),
+                'description' => $faker->paragraph,
+                'pic' => $faker->imageUrl(),
+            ]);
+        }
+    }
+}
+
+use Illuminate\Database\Seeder;
+use App\Models\Category;
+use Faker\Factory as Faker;
+
+class CategoriesSeeder extends Seeder
+{
+    public function run()
+    {
+        $faker = Faker::create();
+
+        for ($i = 0; $i < 10; $i++) {
+            Category::create([
+                'name' => $faker->word,
+            ]);
+        }
+    }
+}
+
+php artisan db:seed
+----------------------------------------------------------------------
